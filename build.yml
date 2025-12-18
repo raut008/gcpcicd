@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  PROJECT_ID: my-gcp-project-123456 # 🔴 CHANGE THIS
+  PROJECT_ID: graphic-matrix-481507-u5 # 🔴 CHANGE THIS
   REGION: us-central1 # 🔴 CHANGE IF NEEDED
   REPOSITORY: myrepo # 🔴 CHANGE IF NEEDED
   IMAGE_NAME: myapp # 🔴 CHANGE IF YOU WANT
