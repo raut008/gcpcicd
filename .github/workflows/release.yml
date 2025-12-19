@@ -6,11 +6,11 @@ on:
       - main
 
 env:
-  PROJECT_ID: graphic-matrix-481507-u5 # 🔴 CHANGE THIS
-  REGION: us-east1 # 🔴 CHANGE IF NEEDED
-  REPOSITORY: gcp-cicd # 🔴 CHANGE IF NEEDED
-  IMAGE_NAME: gcp-cicd # 🔴 CHANGE IF YOU WANT
-  GKE_CLUSTER_NAME: gcpcicd # 🔴 CHANGE IF NEEDED
+  PROJECT_ID: graphic-matrix-481507-u5 # 🔴 Ensure this matches your GCP project
+  REGION: us-east1 # 🔴 Ensure this matches your GKE cluster region
+  REPOSITORY: gcp-cicd
+  IMAGE_NAME: gcp-cicd
+  GKE_CLUSTER_NAME: gcpcicd # 🔴 Ensure this matches your GKE cluster name
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -34,6 +34,7 @@ jobs:
 
       - name: Set up Kustomize
         run: |
+          rm -rf kustomize
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
 
