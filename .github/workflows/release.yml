@@ -1,9 +1,10 @@
 name: Release and Deploy
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build Docker Image (CI)"]
+    types:
+      - completed
 
 env:
   PROJECT_ID: graphic-matrix-481507-u5 # 🔴 Ensure this matches your GCP project
@@ -13,6 +14,7 @@ env:
   GKE_CLUSTER_NAME: gcpcicd # 🔴 Ensure this matches your GKE cluster name
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
