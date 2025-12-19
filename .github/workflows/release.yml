@@ -2,8 +2,8 @@ name: Release and Deploy
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - main
 
 env:
   PROJECT_ID: graphic-matrix-481507-u5 # 🔴 CHANGE THIS
