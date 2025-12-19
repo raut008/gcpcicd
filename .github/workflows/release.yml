@@ -10,7 +10,7 @@ env:
   REGION: us-east1 # 🔴 CHANGE IF NEEDED
   REPOSITORY: gcp-cicd # 🔴 CHANGE IF NEEDED
   IMAGE_NAME: gcp-cicd # 🔴 CHANGE IF YOU WANT
-
+  GKE_CLUSTER_NAME: gcpcicd # 🔴 CHANGE IF NEEDED
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
 
       - name: Get GKE credentials
         run: |
-          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --region $REGION --project $PROJECT_ID
+          gcloud container clusters get-credentials $GKE_CLUSTER_NAME --region $REGION --project $PROJECT_ID
 
       - name: Set up Kustomize
         run: |
