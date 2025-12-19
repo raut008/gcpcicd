@@ -34,9 +34,8 @@ jobs:
 
       - name: Set up Kustomize
         run: |
-          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/latest/download/kustomize_$(uname -s)_$(uname -m)
-          chmod u+x ./kustomize
-          sudo mv ./kustomize /usr/local/bin/
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
 
       - name: Deploy with Kustomize
         run: |
