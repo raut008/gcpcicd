@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: counter-app
+spec:
+  type: ClusterIP
+  selector:
+    app: counter-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
