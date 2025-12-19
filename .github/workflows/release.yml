@@ -40,4 +40,8 @@ jobs:
 
       - name: Deploy with Kustomize
         run: |
-          kustomize build kustomize/overlays/production | kubectl apply -f -
+          if [ -d "kustomize/overlays/production" ]; then
+            kustomize build kustomize/overlays/production | kubectl apply -f -
+          else
+            echo "Directory kustomize/overlays/production does not exist. Skipping deployment."
+          fi
