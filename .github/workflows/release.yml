@@ -50,6 +50,10 @@ jobs:
           echo "Kustomize directory contents:"
           ls -la kustomize/ || echo "kustomize directory not found"
 
+      - name: Create namespace if not exists
+        run: |
+          kubectl create namespace production --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy with Kustomize
         run: |
           IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
