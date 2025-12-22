@@ -25,10 +25,10 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Set up Cloud SDK and kubectl
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          version: "latest"
+          install_components: "kubectl"
 
       - name: Get GKE credentials
         run: |
