@@ -1,7 +1,7 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: my-ssl-cert
+  name: gcpcicd-ssl
 spec:
   domains:
     - gcpcicd.anand.theraut.com

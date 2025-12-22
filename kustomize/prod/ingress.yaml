@@ -1,9 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gcp-cicd-ingress
+  name: gcpcicd-ingress
   annotations:
-    networking.gke.io/managed-certificates: my-ssl-cert
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: gcpcicd-ssl
 spec:
   rules:
     - host: gcpcicd.anand.theraut.com

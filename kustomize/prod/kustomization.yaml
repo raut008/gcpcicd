@@ -7,6 +7,8 @@ resources:
   - ../base
   - managed-cert.yaml
   - ingress.yaml
+  - service.yaml
+  - deployment.yaml
 
 images:
   - name: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd
