@@ -58,6 +58,7 @@ jobs:
         run: |
           if [ -d "kustomize/prod" ]; then
             kustomize build kustomize/prod | kubectl apply -f -
+            kubectl rollout restart deployment/gcp-cicd -n production
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
             echo "Available directories:"
