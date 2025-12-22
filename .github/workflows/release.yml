@@ -56,12 +56,8 @@ jobs:
 
       - name: Deploy with Kustomize
         run: |
-          IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
           if [ -d "kustomize/prod" ]; then
-            kustomize build kustomize/prod \
-              --load-restrictor LoadRestrictionsNone \
-              | sed "s/newTag: latest/newTag: $IMAGE_TAG/" \
-              | kubectl apply -f -
+            kustomize build kustomize/prod | kubectl apply -f -
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
             echo "Available directories:"
@@ -76,5 +72,5 @@ jobs:
           kubectl get pods -n production
           echo "Checking services:"
           kubectl get svc -n production
-          echo "Describing deployment:"
-          kubectl describe deployment gcp-cicd -n production
+          echo "Pod logs:"
+          kubectl logs -n production -l app=gcp-cicd --tail=50
