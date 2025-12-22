@@ -40,6 +40,15 @@ jobs:
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
 
+      - name: Debug - List directory structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Directory contents:"
+          ls -la
+          echo "Kustomize directory contents:"
+          ls -la kustomize/ || echo "kustomize directory not found"
+
       - name: Deploy with Kustomize
         run: |
           IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
@@ -50,4 +59,6 @@ jobs:
               | kubectl apply -f -
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
+            echo "Available directories:"
+            find . -type d -name "kustomize" -o -name "prod"
           fi
