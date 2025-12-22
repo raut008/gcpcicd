@@ -67,3 +67,14 @@ jobs:
             echo "Available directories:"
             find . -type d -name "kustomize" -o -name "prod"
           fi
+
+      - name: Verify Deployment
+        run: |
+          echo "Waiting for deployment to be ready..."
+          kubectl rollout status deployment/gcp-cicd -n production --timeout=5m
+          echo "Checking pods:"
+          kubectl get pods -n production
+          echo "Checking services:"
+          kubectl get svc -n production
+          echo "Describing deployment:"
+          kubectl describe deployment gcp-cicd -n production
