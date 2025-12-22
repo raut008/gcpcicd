@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: gcp-cicd
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: gcp-cicd
@@ -17,4 +16,4 @@ spec:
           image: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 80

@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: gcp-cicd
 spec:
-  type: LoadBalancer
   selector:
     app: gcp-cicd
   ports:
