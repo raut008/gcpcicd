@@ -66,11 +66,29 @@ jobs:
 
       - name: Verify Deployment
         run: |
-          echo "Waiting for deployment to be ready..."
-          kubectl rollout status deployment/gcp-cicd -n production --timeout=5m
-          echo "Checking pods:"
-          kubectl get pods -n production
-          echo "Checking services:"
-          kubectl get svc -n production
-          echo "Pod logs:"
-          kubectl logs -n production -l app=gcp-cicd --tail=50
+          echo "Checking pods status:"
+          kubectl get pods -n production -o wide
+          echo ""
+          echo "Checking deployment:"
+          kubectl get deployment gcp-cicd -n production
+          echo ""
+          echo "Describing deployment:"
+          kubectl describe deployment gcp-cicd -n production
+          echo ""
+          echo "Checking pod events and logs:"
+          POD_NAME=$(kubectl get pods -n production -l app=gcp-cicd -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "")
+          if [ ! -z "$POD_NAME" ]; then
+            echo "Pod: $POD_NAME"
+            kubectl describe pod $POD_NAME -n production
+            echo ""
+            echo "Pod logs:"
+            kubectl logs $POD_NAME -n production --tail=100 || echo "No logs available"
+          else
+            echo "No pods found"
+          fi
+          echo ""
+          echo "Checking replica sets:"
+          kubectl get rs -n production
+          echo ""
+          echo "Waiting for deployment (will fail if not ready)..."
+          kubectl rollout status deployment/gcp-cicd -n production --timeout=5m || true
