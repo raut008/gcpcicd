@@ -36,9 +36,10 @@ jobs:
 
       - name: Set up Kustomize
         run: |
-          rm -rf kustomize
+          cd /tmp
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
+          cd -
 
       - name: Debug - List directory structure
         run: |
