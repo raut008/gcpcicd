@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+resources:
+  - ../base
+
+images:
+  - name: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd
+    newTag: latest

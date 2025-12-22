@@ -43,11 +43,11 @@ jobs:
       - name: Deploy with Kustomize
         run: |
           IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
-          if [ -d "kustomize/overlays/production" ]; then
-            kustomize build kustomize/overlays/production \
+          if [ -d "kustomize/prod" ]; then
+            kustomize build kustomize/prod \
               --load-restrictor LoadRestrictionsNone \
               | sed "s/newTag: latest/newTag: $IMAGE_TAG/" \
               | kubectl apply -f -
           else
-            echo "Directory kustomize/overlays/production does not exist. Skipping deployment."
+            echo "Directory kustomize/prod does not exist. Skipping deployment."
           fi
