@@ -6,4 +6,4 @@ spec:
   cdn:
     enabled: true
     cachePolicy:
-      cacheMode: USE_ORIGIN_HEADERS
+    cacheMode: USE_ORIGIN_HEADERS
