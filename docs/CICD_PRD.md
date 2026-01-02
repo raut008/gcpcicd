@@ -254,6 +254,7 @@ When you first deploy with a Service of type `LoadBalancer`, you get a single ex
 However, as your needs grow (multiple apps, custom domains, HTTPS, path-based routing, or advanced rules), a Load Balancer alone isn’t enough.
 
 **Ingress was needed because:**
+
 - It lets you route traffic to different services based on hostnames or paths.
 - It enables SSL termination and managed certificates.
 - It supports advanced features like URL rewrites, redirects, and integration with Cloud CDN.
