@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import NavBar from "./components/navbar";
 import Counters from "./components/counters";
+import NavBar from "./components/navbar";
 
 class App extends Component {
   state = {
@@ -9,6 +9,7 @@ class App extends Component {
       { id: 2, value: 0 },
       { id: 3, value: 0 },
       { id: 4, value: 0 },
+      { id: 5, value: 0 },
     ],
   };
 
@@ -50,11 +51,7 @@ class App extends Component {
       <div className="main__wrap">
         <main className="container">
           <div className="card__box">
-            <NavBar
-              totalCounters={
-                this.state.counters.filter((c) => c.value > 0).length
-              }
-            />
+            <NavBar totalCounters={this.state.counters.filter((c) => c.value > 0).length} />
             <Counters
               counters={this.state.counters}
               onReset={this.handleReset}
