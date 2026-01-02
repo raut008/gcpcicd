@@ -7,11 +7,12 @@ on:
       - completed
 
 env:
-  PROJECT_ID: graphic-matrix-481507-u5 # 🔴 Ensure this matches your GCP project
-  REGION: us-east1 # 🔴 Ensure this matches your GKE cluster region
+  PROJECT_ID: graphic-matrix-481507-u5
+  REGION: us-east1
   REPOSITORY: gcp-cicd
   IMAGE_NAME: gcp-cicd
-  GKE_CLUSTER_NAME: gcpcicd # 🔴 Ensure this matches your GKE cluster name
+  GKE_CLUSTER_NAME: gcpcicd
+
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -41,15 +42,6 @@ jobs:
           sudo mv kustomize /usr/local/bin/
           cd -
 
-      - name: Debug - List directory structure
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Directory contents:"
-          ls -la
-          echo "Kustomize directory contents:"
-          ls -la kustomize/ || echo "kustomize directory not found"
-
       - name: Create namespace if not exists
         run: |
           kubectl create namespace production --dry-run=client -o yaml | kubectl apply -f -
@@ -61,35 +53,10 @@ jobs:
             kubectl rollout restart deployment/gcp-cicd -n production || echo "Deployment not found, skipping restart"
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
-            echo "Available directories:"
-            find . -type d -name "kustomize" -o -name "prod"
           fi
 
       - name: Verify Deployment
         run: |
-          echo "Checking pods status:"
           kubectl get pods -n production -o wide
-          echo ""
-          echo "Checking deployment:"
           kubectl get deployment gcp-cicd -n production
-          echo ""
-          echo "Describing deployment:"
-          kubectl describe deployment gcp-cicd -n production
-          echo ""
-          echo "Checking pod events and logs:"
-          POD_NAME=$(kubectl get pods -n production -l app=gcp-cicd -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "")
-          if [ ! -z "$POD_NAME" ]; then
-            echo "Pod: $POD_NAME"
-            kubectl describe pod $POD_NAME -n production
-            echo ""
-            echo "Pod logs:"
-            kubectl logs $POD_NAME -n production --tail=100 || echo "No logs available"
-          else
-            echo "No pods found"
-          fi
-          echo ""
-          echo "Checking replica sets:"
-          kubectl get rs -n production
-          echo ""
-          echo "Waiting for deployment (will fail if not ready)..."
           kubectl rollout status deployment/gcp-cicd -n production --timeout=5m || true
