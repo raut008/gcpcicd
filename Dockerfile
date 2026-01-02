@@ -16,6 +16,8 @@ COPY --from=build /app/build /usr/share/nginx/html
 # Remove the default nginx config and add your custom config
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/mime.types /etc/nginx/mime.types
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
