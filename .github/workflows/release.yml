@@ -46,13 +46,14 @@ jobs:
         run: |
           kubectl create namespace production --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Replace tokens in kustomize/prod
+        run: |
+          export IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
+          find kustomize/prod -type f -exec sed -i "s|#{IMAGE_TAG}#|$IMAGE_TAG|g" {} +
+
       - name: Deploy with Kustomize
         run: |
           if [ -d "kustomize/prod" ]; then
-            export IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
-            # Substitute variables in kustomization.yaml
-            envsubst < kustomize/prod/kustomization.yaml > kustomize/prod/kustomization.yaml.tmp
-            mv kustomize/prod/kustomization.yaml.tmp kustomize/prod/kustomization.yaml
             kustomize build kustomize/prod | kubectl apply -f -
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
