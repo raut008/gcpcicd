@@ -9,3 +9,7 @@ resources:
   - backend-config.yaml
 
 namespace: production
+
+images:
+  - name: gcp-cicd
+    newTag: ${IMAGE_TAG}
