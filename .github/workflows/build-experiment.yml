@@ -1,4 +1,4 @@
-name: Build Docker Image (CI) Experimental
+name: Build Docker Image (CI) Experiment
 
 on:
   push:
