@@ -1,9 +1,8 @@
-name: Release and Deploy
+name: Release and Deploy Experiment
 
 on:
   push:
     branches:
-      - main
       - experiment/*
   workflow_run:
     workflows: ["Build Docker Image (CI)"]
