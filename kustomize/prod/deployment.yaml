@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: gcp-cicd
-          image: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd:latest
+          image: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd:${IMAGE_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
