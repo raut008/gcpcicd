@@ -49,8 +49,8 @@ jobs:
       - name: Deploy with Kustomize
         run: |
           if [ -d "kustomize/prod" ]; then
-            kustomize build kustomize/prod | kubectl apply -f -
-            kubectl rollout restart deployment/gcp-cicd -n production || echo "Deployment not found, skipping restart"
+            export IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
+            kustomize build kustomize/prod | envsubst | kubectl apply -f -
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
           fi
