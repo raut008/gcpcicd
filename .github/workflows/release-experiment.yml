@@ -5,7 +5,7 @@ on:
     branches:
       - experiment/*
   workflow_run:
-    workflows: ["Build Docker Image (CI)"]
+    workflows: ["Build Docker Image (CI) Experiment"]
     types:
       - completed
 
