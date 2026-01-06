@@ -1,6 +1,10 @@
 name: Release and Deploy
 
 on:
+  push:
+    branches:
+      - main
+      - experiment/*
   workflow_run:
     workflows: ["Build Docker Image (CI)"]
     types:
