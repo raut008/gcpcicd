@@ -50,7 +50,10 @@ jobs:
         run: |
           if [ -d "kustomize/prod" ]; then
             export IMAGE_TAG=${{ github.sha }}-${{ github.run_number }}
-            kustomize build kustomize/prod | envsubst | kubectl apply -f -
+            # Substitute variables in kustomization.yaml
+            envsubst < kustomize/prod/kustomization.yaml > kustomize/prod/kustomization.yaml.tmp
+            mv kustomize/prod/kustomization.yaml.tmp kustomize/prod/kustomization.yaml
+            kustomize build kustomize/prod | kubectl apply -f -
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
           fi
