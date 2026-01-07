@@ -3,9 +3,8 @@ kind: Kustomization
 
 namespace: dev
 
-resources:
+bases:
   - ../base
 
-images:
-  - name: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd
-    newTag: latest
+resources:
+  - deployment.yaml

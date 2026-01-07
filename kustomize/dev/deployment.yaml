@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gcp-cicd
+spec:
+  selector:
+    matchLabels:
+      app-name: gcp-cicd
+      release: stable
+  template:
+    metadata:
+      labels:
+        app-name: gcp-cicd
+        release: stable
+    spec:
+      containers:
+        - name: gcp-cicd
+          image: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd:#{IMAGE_TAG}#
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 300m
+              memory: 384Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+

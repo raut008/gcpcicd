@@ -3,12 +3,11 @@ kind: Kustomization
 
 namespace: production
 
-resources:
+bases:
   - ../base
+
+resources:
+  - deployment.yaml
   - managed-cert.yaml
   - ingress.yaml
   - backend-config.yaml
-
-images:
-  - name: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd
-    newTag: latest

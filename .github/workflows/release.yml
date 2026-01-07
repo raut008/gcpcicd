@@ -21,6 +21,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Download image tag artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: image-tag
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Read image tag
+        id: get_tag
+        run: |
+          IMAGE_TAG=$(cat image_tag.txt)
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "Using image tag: $IMAGE_TAG"
+
+      - name: Replace IMAGE_TAG in deployment files
+        run: |
+          find kustomize -name "deployment.yaml" -exec sed -i 's/#{IMAGE_TAG}#/${{ steps.get_tag.outputs.image_tag }}/g' {} \;
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -49,8 +67,8 @@ jobs:
       - name: Deploy with Kustomize
         run: |
           if [ -d "kustomize/prod" ]; then
+            echo "Deploying with image tag: ${{ steps.get_tag.outputs.image_tag }}"
             kustomize build kustomize/prod | kubectl apply -f -
-            kubectl rollout restart deployment/gcp-cicd -n production || echo "Deployment not found, skipping restart"
           else
             echo "Directory kustomize/prod does not exist. Skipping deployment."
           fi
