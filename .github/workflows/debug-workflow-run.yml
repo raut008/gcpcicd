@@ -1,5 +1,8 @@
 name: Debug Workflow Run
 
+permissions:
+  contents: read
+
 on:
   workflow_run:
     workflows: ["Build Docker Image (CI) Experiment"]
