@@ -1,0 +1,13 @@
+name: Debug Workflow Run
+
+on:
+  workflow_run:
+    workflows: ["Build Docker Image (CI) Experiment"]
+    types:
+      - completed
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "workflow_run event triggered!"
