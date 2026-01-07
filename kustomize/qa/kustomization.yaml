@@ -3,8 +3,6 @@ kind: Kustomization
 
 namespace: qa
 
-bases:
-  - ../base
-
 resources:
+  - ../base
   - deployment.yaml

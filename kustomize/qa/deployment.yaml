@@ -5,13 +5,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app-name: gcp-cicd
-      release: stable
+      app: gcp-cicd
   template:
     metadata:
       labels:
-        app-name: gcp-cicd
-        release: stable
+        app: gcp-cicd
     spec:
       containers:
         - name: gcp-cicd
@@ -26,4 +24,3 @@ spec:
             requests:
               cpu: 200m
               memory: 256Mi
-

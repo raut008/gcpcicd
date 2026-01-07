@@ -3,10 +3,8 @@ kind: Kustomization
 
 namespace: production
 
-bases:
-  - ../base
-
 resources:
+  - ../base
   - deployment.yaml
   - managed-cert.yaml
   - ingress.yaml
