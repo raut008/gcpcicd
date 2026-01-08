@@ -1,11 +1,21 @@
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  user-select: none;
+  background: #0d1117;
 }
 
+#root {
+  min-height: 100vh;
+}
+
+/* Keep old styles for reference if needed */
 .main__wrap {
   height: 100vh;
   width: 100vw;
@@ -20,16 +30,20 @@ body {
   border-radius: 12px;
   background-color: #ddf2f5;
 }
+
 .row {
   justify-content: center !important;
 }
+
 .navbar {
   justify-content: center !important;
   background: transparent !important;
 }
+
 .btn {
   cursor: pointer !important;
 }
+
 .badge {
   width: 70px !important;
 }
