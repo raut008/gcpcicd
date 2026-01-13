@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import Documentation from "./components/Documentation";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 class App extends Component {
   render() {
-    return <Documentation />;
+    return (
+      <ErrorBoundary>
+        <Documentation />
+      </ErrorBoundary>
+    );
   }
 }
 
