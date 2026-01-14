@@ -9,6 +9,7 @@ class Documentation extends Component {
     isLoading: true,
     loadingError: null,
     isMobileMenuOpen: false,
+    copiedCodeId: null,
   };
 
   componentDidMount() {
@@ -59,6 +60,75 @@ class Documentation extends Component {
     this.setState({ isMobileMenuOpen: false });
   };
 
+  handleSearchChange = (e) => {
+    this.setState({ searchTerm: e.target.value });
+  };
+
+  clearSearch = () => {
+    this.setState({ searchTerm: "" });
+  };
+
+  copyToClipboard = async (text, codeId) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      this.setState({ copiedCodeId: codeId });
+      setTimeout(() => {
+        this.setState({ copiedCodeId: null });
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy text:", err);
+    }
+  };
+
+  getFilteredSections = () => {
+    const { searchTerm } = this.state;
+    if (!searchTerm.trim()) {
+      return this.sections;
+    }
+    const term = searchTerm.toLowerCase();
+    return this.sections.filter(
+      (section) =>
+        section.title.toLowerCase().includes(term) ||
+        section.id.toLowerCase().includes(term)
+    );
+  };
+
+  highlightText = (text, searchTerm) => {
+    if (!searchTerm.trim()) {
+      return text;
+    }
+    const parts = text.split(new RegExp(`(${searchTerm})`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <mark key={index} className="search-highlight">
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    );
+  };
+
+  renderCodeBlock = (code, header, codeId) => {
+    const isCopied = this.state.copiedCodeId === codeId;
+    return (
+      <div className="code-block">
+        {header && <div className="code-header">{header}</div>}
+        <div className="code-content-wrapper">
+          <pre>{code}</pre>
+          <button
+            className={`copy-code-btn ${isCopied ? "copied" : ""}`}
+            onClick={() => this.copyToClipboard(code, codeId)}
+            aria-label="Copy code"
+            title={isCopied ? "Copied!" : "Copy code"}
+          >
+            {isCopied ? "✓ Copied" : "📋 Copy"}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     // Show loading spinner while content is loading
     if (this.state.isLoading) {
@@ -101,8 +171,35 @@ class Documentation extends Component {
             <h2>📚 CI/CD Guide</h2>
             <p>Kubernetes & DevOps</p>
           </div>
+          {/* Search Bar */}
+          <div className="docs-search-container">
+            <div className="docs-search-wrapper">
+              <span className="search-icon">🔍</span>
+              <input
+                type="text"
+                className="docs-search-input"
+                placeholder="Search sections..."
+                value={this.state.searchTerm}
+                onChange={this.handleSearchChange}
+              />
+              {this.state.searchTerm && (
+                <button
+                  className="search-clear-btn"
+                  onClick={this.clearSearch}
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            {this.state.searchTerm && (
+              <div className="search-results-count">
+                {this.getFilteredSections().length} result{this.getFilteredSections().length !== 1 ? "s" : ""}
+              </div>
+            )}
+          </div>
           <ul className="docs-nav">
-            {this.sections.map((section) => (
+            {this.getFilteredSections().map((section) => (
               <li
                 key={section.id}
                 className={this.state.activeSection === section.id ? "active" : ""}
@@ -110,9 +207,14 @@ class Documentation extends Component {
                 onTouchStart={() => {}} // Improve touch responsiveness
               >
                 <span className="nav-icon">{section.icon}</span>
-                {section.title}
+                {this.highlightText(section.title, this.state.searchTerm)}
               </li>
             ))}
+            {this.getFilteredSections().length === 0 && (
+              <li className="no-results">
+                <span>No sections found</span>
+              </li>
+            )}
           </ul>
         </nav>
 
@@ -181,8 +283,7 @@ class Documentation extends Component {
           {/* Folder Structure */}
           <section id="structure" className="docs-section">
             <h2>📁 Folder Structure</h2>
-            <div className="code-block">
-              <pre>{`counter-app-master/
+            {this.renderCodeBlock(`counter-app-master/
 ├── .github/
 │   └── workflows/
 │       ├── build.yml          # CI: Build & push Docker image
@@ -206,8 +307,7 @@ class Documentation extends Component {
 ├── nginx/                     # Nginx configuration
 ├── src/                       # React source code
 ├── Dockerfile                 # Container build instructions
-└── package.json               # Node.js dependencies`}</pre>
-            </div>
+└── package.json               # Node.js dependencies`, null, "folder-structure")}
           </section>
 
           {/* Kubernetes Basics */}
@@ -323,9 +423,7 @@ class Documentation extends Component {
               The Deployment tells Kubernetes <strong>HOW</strong> to run your application.
             </p>
 
-            <div className="code-block">
-              <div className="code-header">kustomize/prod/deployment.yaml</div>
-              <pre>{`apiVersion: apps/v1              # API version for Deployment
+            {this.renderCodeBlock(`apiVersion: apps/v1              # API version for Deployment
 kind: Deployment                 # Type of Kubernetes object
 metadata:
   name: gcp-cicd                 # Deployment name (unique in namespace)
@@ -343,8 +441,7 @@ spec:
           image: us-east1-docker.pkg.dev/.../gcp-cicd:#{IMAGE_TAG}#
           imagePullPolicy: Always
           ports:
-            - containerPort: 80`}</pre>
-            </div>
+            - containerPort: 80`, "kustomize/prod/deployment.yaml", "deployment-yaml")}
 
             <div className="info-box warning">
               <h4>⚠️ Important: Selector is Immutable</h4>
@@ -374,9 +471,7 @@ spec:
               The Service provides a <strong>stable endpoint</strong> to access pods.
             </p>
 
-            <div className="code-block">
-              <div className="code-header">kustomize/base/service.yaml</div>
-              <pre>{`apiVersion: v1
+            {this.renderCodeBlock(`apiVersion: v1
 kind: Service
 metadata:
   name: gcp-cicd
@@ -390,8 +485,7 @@ spec:
     - port: 80           # Service listens on this port
       targetPort: 80     # Forwards to container port
   selector:
-    app: gcp-cicd        # Finds pods with this label`}</pre>
-            </div>
+    app: gcp-cicd        # Finds pods with this label`, "kustomize/base/service.yaml", "service-yaml")}
 
             <h3>How Service Finds Pods</h3>
             <div className="diagram-box">
@@ -411,9 +505,7 @@ spec:
               The Ingress routes <strong>external HTTP/HTTPS traffic</strong> to services.
             </p>
 
-            <div className="code-block">
-              <div className="code-header">kustomize/prod/ingress.yaml</div>
-              <pre>{`apiVersion: networking.k8s.io/v1
+            {this.renderCodeBlock(`apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gcpcicd-ingress
@@ -436,8 +528,7 @@ spec:
               service:
                 name: gcp-cicd
                 port:
-                  number: 80`}</pre>
-            </div>
+                  number: 80`, "kustomize/prod/ingress.yaml", "ingress-yaml")}
 
             <h3>Ingress vs Load Balancer</h3>
             <div className="comparison-grid">
@@ -465,16 +556,13 @@ Traffic → Ingress ─┼→ /app/* → app-svc
             <h2>🔒 Managed Certificate</h2>
             <p>Google-managed SSL certificate for HTTPS.</p>
 
-            <div className="code-block">
-              <div className="code-header">kustomize/prod/managed-cert.yaml</div>
-              <pre>{`apiVersion: networking.gke.io/v1
+            {this.renderCodeBlock(`apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
   name: gcpcicd-ssl              # Referenced by Ingress
 spec:
   domains:
-    - gcpcicd.anand.theraut.com  # Domain(s) to secure`}</pre>
-            </div>
+    - gcpcicd.anand.theraut.com  # Domain(s) to secure`, "kustomize/prod/managed-cert.yaml", "managed-cert-yaml")}
 
             <div className="info-box info">
               <h4>ℹ️ How It Works</h4>
@@ -495,9 +583,7 @@ spec:
             <h2>⚡ Backend Config (CDN)</h2>
             <p>Configures Google Cloud Load Balancer features like CDN.</p>
 
-            <div className="code-block">
-              <div className="code-header">kustomize/prod/backend-config.yaml</div>
-              <pre>{`apiVersion: cloud.google.com/v1
+            {this.renderCodeBlock(`apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: gcp-cicd-backendconfig
@@ -505,8 +591,7 @@ spec:
   cdn:
     enabled: true                    # Enable Cloud CDN
     cachePolicy:
-    cacheMode: USE_ORIGIN_HEADERS    # Respect Cache-Control headers`}</pre>
-            </div>
+    cacheMode: USE_ORIGIN_HEADERS    # Respect Cache-Control headers`, "kustomize/prod/backend-config.yaml", "backend-config-yaml")}
 
             <h3>CDN Cache Modes</h3>
             <div className="table-wrapper">
@@ -550,8 +635,7 @@ spec:
             </p>
 
             <h3>Our Structure</h3>
-            <div className="code-block">
-              <pre>{`kustomize/
+            {this.renderCodeBlock(`kustomize/
 ├── base/                  # SHARED (inherited by all)
 │   ├── kustomization.yaml
 │   └── service.yaml       # Same service for all envs
@@ -569,13 +653,10 @@ spec:
     ├── deployment.yaml
     ├── ingress.yaml       # Only prod has external access
     ├── managed-cert.yaml  # Only prod has SSL
-    └── backend-config.yaml`}</pre>
-            </div>
+    └── backend-config.yaml`, null, "kustomize-structure")}
 
             <h3>How It Works</h3>
-            <div className="code-block">
-              <div className="code-header">kustomize/prod/kustomization.yaml</div>
-              <pre>{`apiVersion: kustomize.config.k8s.io/v1beta1
+            {this.renderCodeBlock(`apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: production           # All resources go here
@@ -585,8 +666,7 @@ resources:
   - deployment.yaml             # Add prod deployment
   - managed-cert.yaml           # Prod-only resources
   - ingress.yaml
-  - backend-config.yaml`}</pre>
-            </div>
+  - backend-config.yaml`, "kustomize/prod/kustomization.yaml", "kustomization-yaml")}
           </section>
 
           {/* CI/CD Workflows */}
@@ -754,16 +834,14 @@ resources:
 
             <div className="troubleshoot-card">
               <h3>❌ Pods not starting</h3>
-              <div className="code-block">
-                <pre>{`# Check pod status
+              {this.renderCodeBlock(`# Check pod status
 kubectl get pods -n production
 
 # Look for errors
 kubectl describe pod <pod-name> -n production
 
 # Check logs
-kubectl logs <pod-name> -n production`}</pre>
-              </div>
+kubectl logs <pod-name> -n production`, null, "troubleshoot-pods")}
               <p>
                 <strong>Common issues:</strong>
               </p>
@@ -782,10 +860,8 @@ kubectl logs <pod-name> -n production`}</pre>
 
             <div className="troubleshoot-card">
               <h3>❌ Selector Immutable Error</h3>
-              <div className="code-block">
-                <pre>{`The Deployment "gcp-cicd" is invalid: 
-spec.selector: Invalid value: field is immutable`}</pre>
-              </div>
+              {this.renderCodeBlock(`The Deployment "gcp-cicd" is invalid: 
+spec.selector: Invalid value: field is immutable`, null, "troubleshoot-selector")}
               <p>
                 <strong>Cause:</strong> You can't change <code>spec.selector.matchLabels</code> on an existing deployment.
               </p>
@@ -796,9 +872,7 @@ spec.selector: Invalid value: field is immutable`}</pre>
 
             <div className="troubleshoot-card">
               <h3>❌ Certificate Not Ready</h3>
-              <div className="code-block">
-                <pre>{`kubectl get managedcertificate -n production`}</pre>
-              </div>
+              {this.renderCodeBlock(`kubectl get managedcertificate -n production`, null, "troubleshoot-cert")}
               <p>
                 If status is not <code>Active</code>:
               </p>
