@@ -20,7 +20,8 @@ This documentation explains every aspect of our codebase, CI/CD pipeline, and Ku
 
 ## Project Overview
 
-This is a React Counter App that gets:
+This is a Guide to CI/CD and Kubernetes Deployment that gets:
+
 1. **Built** using Node.js
 2. **Packaged** into a Docker container with Nginx
 3. **Deployed** to Google Kubernetes Engine (GKE)
@@ -28,16 +29,16 @@ This is a React Counter App that gets:
 
 ### Key Technologies
 
-| Technology | Purpose |
-|------------|---------|
-| **React** | Frontend application |
-| **Docker** | Containerization |
-| **Nginx** | Web server inside container |
-| **Kubernetes (K8s)** | Container orchestration |
-| **Kustomize** | K8s manifest management |
-| **GitHub Actions** | CI/CD automation |
-| **GKE** | Google's managed Kubernetes |
-| **Artifact Registry** | Docker image storage |
+| Technology            | Purpose                     |
+| --------------------- | --------------------------- |
+| **React**             | Frontend application        |
+| **Docker**            | Containerization            |
+| **Nginx**             | Web server inside container |
+| **Kubernetes (K8s)**  | Container orchestration     |
+| **Kustomize**         | K8s manifest management     |
+| **GitHub Actions**    | CI/CD automation            |
+| **GKE**               | Google's managed Kubernetes |
+| **Artifact Registry** | Docker image storage        |
 
 ---
 
@@ -80,6 +81,7 @@ Before diving into the YAML files, let's understand the core Kubernetes concepts
 ### What is Kubernetes?
 
 Kubernetes (K8s) is a container orchestration platform that:
+
 - **Runs** your containers across multiple servers
 - **Scales** your app up/down automatically
 - **Heals** by restarting failed containers
@@ -129,15 +131,15 @@ Kubernetes (K8s) is a container orchestration platform that:
 
 ### Key Concepts Explained
 
-| Object | What It Does | Analogy |
-|--------|-------------|---------|
-| **Pod** | Smallest deployable unit; runs one or more containers | A single worker |
-| **Deployment** | Manages pods; handles scaling and updates | A team manager |
-| **Service** | Stable network endpoint for pods | Reception desk |
-| **Ingress** | Routes external HTTP/HTTPS traffic | Front door |
-| **Namespace** | Logical isolation for resources | Different floors in a building |
-| **ConfigMap** | Stores non-sensitive configuration | Settings file |
-| **Secret** | Stores sensitive data (passwords, keys) | Vault |
+| Object         | What It Does                                          | Analogy                        |
+| -------------- | ----------------------------------------------------- | ------------------------------ |
+| **Pod**        | Smallest deployable unit; runs one or more containers | A single worker                |
+| **Deployment** | Manages pods; handles scaling and updates             | A team manager                 |
+| **Service**    | Stable network endpoint for pods                      | Reception desk                 |
+| **Ingress**    | Routes external HTTP/HTTPS traffic                    | Front door                     |
+| **Namespace**  | Logical isolation for resources                       | Different floors in a building |
+| **ConfigMap**  | Stores non-sensitive configuration                    | Settings file                  |
+| **Secret**     | Stores sensitive data (passwords, keys)               | Vault                          |
 
 ---
 
@@ -148,45 +150,46 @@ Kubernetes (K8s) is a container orchestration platform that:
 The Deployment tells Kubernetes HOW to run your application.
 
 ```yaml
-apiVersion: apps/v1              # API version for Deployment resource
-kind: Deployment                 # Type of Kubernetes object
+apiVersion: apps/v1 # API version for Deployment resource
+kind: Deployment # Type of Kubernetes object
 metadata:
-  name: gcp-cicd                 # Name of this deployment (must be unique in namespace)
+  name: gcp-cicd # Name of this deployment (must be unique in namespace)
 spec:
-  selector:                      # How to find pods that belong to this deployment
+  selector: # How to find pods that belong to this deployment
     matchLabels:
-      app: gcp-cicd              # Must match pod template labels (IMMUTABLE!)
-  template:                      # Pod template - blueprint for creating pods
+      app: gcp-cicd # Must match pod template labels (IMMUTABLE!)
+  template: # Pod template - blueprint for creating pods
     metadata:
       labels:
-        app: gcp-cicd            # Labels attached to each pod (must match selector)
+        app: gcp-cicd # Labels attached to each pod (must match selector)
     spec:
       containers:
-        - name: gcp-cicd         # Container name (for logs and debugging)
+        - name: gcp-cicd # Container name (for logs and debugging)
           image: us-east1-docker.pkg.dev/graphic-matrix-481507-u5/gcp-cicd/gcp-cicd:#{IMAGE_TAG}#
           #       └── region ──┘ └────── project-id ──────────┘ └─ repo ─┘ └─ image:tag ─┘
-          imagePullPolicy: Always  # Always pull image (never use cached)
+          imagePullPolicy: Always # Always pull image (never use cached)
           ports:
-            - containerPort: 80    # Port the container listens on
+            - containerPort: 80 # Port the container listens on
 ```
 
 #### Key Fields Explained
 
-| Field | Description | Important Notes |
-|-------|-------------|-----------------|
-| `apiVersion` | API version to use | `apps/v1` for Deployments |
-| `kind` | Type of resource | Deployment, Service, Pod, etc. |
-| `metadata.name` | Unique identifier | Used in kubectl commands |
-| `spec.selector.matchLabels` | Pod selection criteria | ⚠️ **IMMUTABLE** - cannot be changed after creation |
-| `spec.template` | Pod blueprint | All pods created will use this template |
-| `spec.template.metadata.labels` | Pod labels | Must match `selector.matchLabels` |
-| `image` | Docker image to run | Format: `registry/project/repo/image:tag` |
-| `imagePullPolicy` | When to pull image | `Always`, `IfNotPresent`, or `Never` |
-| `containerPort` | Internal port | Must match what app listens on (80 for Nginx) |
+| Field                           | Description            | Important Notes                                     |
+| ------------------------------- | ---------------------- | --------------------------------------------------- |
+| `apiVersion`                    | API version to use     | `apps/v1` for Deployments                           |
+| `kind`                          | Type of resource       | Deployment, Service, Pod, etc.                      |
+| `metadata.name`                 | Unique identifier      | Used in kubectl commands                            |
+| `spec.selector.matchLabels`     | Pod selection criteria | ⚠️ **IMMUTABLE** - cannot be changed after creation |
+| `spec.template`                 | Pod blueprint          | All pods created will use this template             |
+| `spec.template.metadata.labels` | Pod labels             | Must match `selector.matchLabels`                   |
+| `image`                         | Docker image to run    | Format: `registry/project/repo/image:tag`           |
+| `imagePullPolicy`               | When to pull image     | `Always`, `IfNotPresent`, or `Never`                |
+| `containerPort`                 | Internal port          | Must match what app listens on (80 for Nginx)       |
 
 #### Image Tag Placeholder `#{IMAGE_TAG}#`
 
 We use a placeholder instead of `latest` because:
+
 - `latest` tag is ambiguous (which version is "latest"?)
 - Kubernetes may not detect changes if tag doesn't change
 - We want traceability (which commit is deployed?)
@@ -200,21 +203,21 @@ The CI/CD pipeline replaces `#{IMAGE_TAG}#` with the actual tag (e.g., `abc123-4
 The Service provides a stable endpoint to access pods.
 
 ```yaml
-apiVersion: v1                   # Core API version
-kind: Service                    # Type of Kubernetes object
+apiVersion: v1 # Core API version
+kind: Service # Type of Kubernetes object
 metadata:
-  name: gcp-cicd                 # Service name (used by other resources)
+  name: gcp-cicd # Service name (used by other resources)
   labels:
-    app: gcp-cicd                # Labels for organizing/selecting this service
+    app: gcp-cicd # Labels for organizing/selecting this service
   annotations:
     beta.cloud.google.com/backend-config: '{"default": "gcp-cicd-backendconfig"}'
     # ↑ Links this service to a BackendConfig for CDN/caching
 spec:
   ports:
-    - port: 80                   # Port the service listens on
-      targetPort: 80             # Port on the container to forward to
+    - port: 80 # Port the service listens on
+      targetPort: 80 # Port on the container to forward to
   selector:
-    app: gcp-cicd                # Selects pods with this label
+    app: gcp-cicd # Selects pods with this label
 ```
 
 #### How Service Finds Pods
@@ -230,10 +233,10 @@ Service (selector: app=gcp-cicd)
 
 #### Service Types
 
-| Type | Description | Use Case |
-|------|-------------|----------|
-| `ClusterIP` | Internal only (default) | Internal services |
-| `NodePort` | Exposes on each node's IP | Development/testing |
+| Type           | Description                 | Use Case               |
+| -------------- | --------------------------- | ---------------------- |
+| `ClusterIP`    | Internal only (default)     | Internal services      |
+| `NodePort`     | Exposes on each node's IP   | Development/testing    |
 | `LoadBalancer` | Creates cloud load balancer | Simple external access |
 
 We don't specify a type (uses `ClusterIP`) because we use Ingress for external access.
@@ -245,30 +248,30 @@ We don't specify a type (uses `ClusterIP`) because we use Ingress for external a
 The Ingress routes external HTTP/HTTPS traffic to services.
 
 ```yaml
-apiVersion: networking.k8s.io/v1   # Networking API version
-kind: Ingress                      # Type of Kubernetes object
+apiVersion: networking.k8s.io/v1 # Networking API version
+kind: Ingress # Type of Kubernetes object
 metadata:
-  name: gcpcicd-ingress            # Ingress name
+  name: gcpcicd-ingress # Ingress name
   annotations:
-    kubernetes.io/ingress.class: "gce"    # Use Google Cloud Load Balancer
-    networking.gke.io/managed-certificates: gcpcicd-ssl  # Link to SSL certificate
+    kubernetes.io/ingress.class: "gce" # Use Google Cloud Load Balancer
+    networking.gke.io/managed-certificates: gcpcicd-ssl # Link to SSL certificate
 spec:
-  defaultBackend:                  # Fallback if no rules match
+  defaultBackend: # Fallback if no rules match
     service:
-      name: gcp-cicd               # Service to route to
+      name: gcp-cicd # Service to route to
       port:
-        number: 80                 # Service port
+        number: 80 # Service port
   rules:
-    - host: gcpcicd.anand.theraut.com    # Domain name
+    - host: gcpcicd.anand.theraut.com # Domain name
       http:
         paths:
-          - path: /                       # URL path
-            pathType: Prefix              # Match /anything
+          - path: / # URL path
+            pathType: Prefix # Match /anything
             backend:
               service:
-                name: gcp-cicd            # Target service
+                name: gcp-cicd # Target service
                 port:
-                  number: 80              # Service port
+                  number: 80 # Service port
 ```
 
 #### Ingress vs Load Balancer
@@ -293,9 +296,9 @@ spec:
 
 #### Path Types
 
-| Type | Matches |
-|------|---------|
-| `Exact` | Only exact path (`/foo` won't match `/foo/bar`) |
+| Type     | Matches                                                         |
+| -------- | --------------------------------------------------------------- |
+| `Exact`  | Only exact path (`/foo` won't match `/foo/bar`)                 |
 | `Prefix` | Path prefix (`/foo` matches `/foo`, `/foo/bar`, `/foo/bar/baz`) |
 
 ---
@@ -305,13 +308,13 @@ spec:
 Google-managed SSL certificate for HTTPS.
 
 ```yaml
-apiVersion: networking.gke.io/v1     # GKE-specific API
-kind: ManagedCertificate             # Google-managed SSL cert
+apiVersion: networking.gke.io/v1 # GKE-specific API
+kind: ManagedCertificate # Google-managed SSL cert
 metadata:
-  name: gcpcicd-ssl                  # Certificate name (referenced by Ingress)
+  name: gcpcicd-ssl # Certificate name (referenced by Ingress)
 spec:
   domains:
-    - gcpcicd.anand.theraut.com      # Domain(s) to secure
+    - gcpcicd.anand.theraut.com # Domain(s) to secure
 ```
 
 #### How It Works
@@ -335,24 +338,24 @@ spec:
 Configures Google Cloud Load Balancer features like CDN.
 
 ```yaml
-apiVersion: cloud.google.com/v1      # Google Cloud API
-kind: BackendConfig                  # Backend configuration
+apiVersion: cloud.google.com/v1 # Google Cloud API
+kind: BackendConfig # Backend configuration
 metadata:
-  name: gcp-cicd-backendconfig       # Name (referenced in Service annotation)
+  name: gcp-cicd-backendconfig # Name (referenced in Service annotation)
 spec:
   cdn:
-    enabled: true                    # Enable Cloud CDN
+    enabled: true # Enable Cloud CDN
     cachePolicy:
-    cacheMode: USE_ORIGIN_HEADERS    # Respect Cache-Control headers from Nginx
+    cacheMode: USE_ORIGIN_HEADERS # Respect Cache-Control headers from Nginx
 ```
 
 #### CDN Cache Modes
 
-| Mode | Description |
-|------|-------------|
+| Mode                 | Description                                      |
+| -------------------- | ------------------------------------------------ |
 | `USE_ORIGIN_HEADERS` | Respect `Cache-Control` headers from your server |
-| `FORCE_CACHE_ALL` | Cache everything (even without headers) |
-| `CACHE_ALL_STATIC` | Cache common static files (js, css, images) |
+| `FORCE_CACHE_ALL`    | Cache everything (even without headers)          |
+| `CACHE_ALL_STATIC`   | Cache common static files (js, css, images)      |
 
 ---
 
@@ -395,7 +398,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - service.yaml      # Only service in base (shared by all)
+  - service.yaml # Only service in base (shared by all)
 ```
 
 #### Environment Overlay (`kustomize/prod/kustomization.yaml`)
@@ -404,14 +407,14 @@ resources:
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: production           # All resources go to this namespace
+namespace: production # All resources go to this namespace
 
 resources:
-  - ../base                     # Inherit everything from base
-  - deployment.yaml             # Add prod-specific deployment
-  - managed-cert.yaml           # Prod-only: SSL certificate
-  - ingress.yaml                # Prod-only: External access
-  - backend-config.yaml         # Prod-only: CDN configuration
+  - ../base # Inherit everything from base
+  - deployment.yaml # Add prod-specific deployment
+  - managed-cert.yaml # Prod-only: SSL certificate
+  - ingress.yaml # Prod-only: External access
+  - backend-config.yaml # Prod-only: CDN configuration
 ```
 
 ### Building Manifests with Kustomize
@@ -441,9 +444,9 @@ name: Build Docker Image (CI)
 on:
   push:
     branches:
-      - main                    # Only runs on main branch
+      - main # Only runs on main branch
 
-env:                            # Environment variables (shared across all jobs)
+env: # Environment variables (shared across all jobs)
   PROJECT_ID: graphic-matrix-481507-u5
   REGION: us-east1
   REPOSITORY: gcp-cicd
@@ -451,9 +454,9 @@ env:                            # Environment variables (shared across all jobs)
 
 jobs:
   build:
-    runs-on: ubuntu-latest      # Use Ubuntu runner
+    runs-on: ubuntu-latest # Use Ubuntu runner
     outputs:
-      image_tag: ${{ steps.set_tag.outputs.image_tag }}  # Export for other workflows
+      image_tag: ${{ steps.set_tag.outputs.image_tag }} # Export for other workflows
 
     steps:
       # Step 1: Get the code
@@ -472,7 +475,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}  # Service account key
+          credentials_json: ${{ secrets.GCP_SA_KEY }} # Service account key
 
       # Step 4: Configure Docker to push to Artifact Registry
       - name: Configure Docker for Artifact Registry
@@ -512,7 +515,7 @@ name: Release and Deploy
 
 on:
   workflow_run:
-    workflows: ["Build Docker Image (CI)"]  # Triggered by build workflow
+    workflows: ["Build Docker Image (CI)"] # Triggered by build workflow
     types:
       - completed
 
@@ -525,7 +528,7 @@ env:
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Only if build succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} # Only if build succeeded
     runs-on: ubuntu-latest
 
     steps:
@@ -774,6 +777,7 @@ kubectl logs <pod-name> -n production
 ```
 
 Common issues:
+
 - `ImagePullBackOff`: Can't pull Docker image (check image path/permissions)
 - `CrashLoopBackOff`: Container crashes on start (check logs)
 - `Pending`: No resources available (check node capacity)
@@ -796,6 +800,7 @@ kubectl get managedcertificate -n production
 ```
 
 If status is not `Active`:
+
 1. Verify DNS points to Ingress IP
 2. Wait 10-30 minutes for provisioning
 3. Check domain is publicly accessible
@@ -819,14 +824,14 @@ Or wait for cache TTL to expire (based on Cache-Control headers).
 
 ## Quick Reference Card
 
-| What | Command |
-|------|---------|
-| View pods | `kubectl get pods -n production` |
-| View logs | `kubectl logs <pod-name> -n production` |
-| Describe resource | `kubectl describe <type> <name> -n production` |
-| Apply changes | `kustomize build kustomize/prod \| kubectl apply -f -` |
-| Check rollout | `kubectl rollout status deployment/gcp-cicd -n production` |
-| Enter pod shell | `kubectl exec -it <pod-name> -n production -- /bin/sh` |
+| What              | Command                                                    |
+| ----------------- | ---------------------------------------------------------- |
+| View pods         | `kubectl get pods -n production`                           |
+| View logs         | `kubectl logs <pod-name> -n production`                    |
+| Describe resource | `kubectl describe <type> <name> -n production`             |
+| Apply changes     | `kustomize build kustomize/prod \| kubectl apply -f -`     |
+| Check rollout     | `kubectl rollout status deployment/gcp-cicd -n production` |
+| Enter pod shell   | `kubectl exec -it <pod-name> -n production -- /bin/sh`     |
 
 ---
 
