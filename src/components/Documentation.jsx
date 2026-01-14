@@ -254,6 +254,7 @@ class Documentation extends Component {
                 </tr>
               </tbody>
             </table>
+            </div>
           </section>
 
           {/* Deployment YAML */}
