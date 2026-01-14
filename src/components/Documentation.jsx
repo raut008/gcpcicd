@@ -1,12 +1,30 @@
 import React, { Component } from "react";
 import "./Documentation.css";
+import LoadingSpinner from "./LoadingSpinner";
 
 class Documentation extends Component {
   state = {
     activeSection: null,
     searchTerm: "",
+    isLoading: true,
+    loadingError: null,
     isMobileMenuOpen: false,
   };
+
+  componentDidMount() {
+    // Simulate loading time for demonstration
+    // In a real app, this would be actual data fetching
+    this.loadingTimer = setTimeout(() => {
+      this.setState({ isLoading: false });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    // Cleanup timer if component unmounts before loading completes
+    if (this.loadingTimer) {
+      clearTimeout(this.loadingTimer);
+    }
+  }
 
   sections = [
     { id: "overview", title: "Project Overview", icon: "🚀" },
@@ -42,6 +60,27 @@ class Documentation extends Component {
   };
 
   render() {
+    // Show loading spinner while content is loading
+    if (this.state.isLoading) {
+      return <LoadingSpinner message="Loading documentation..." />;
+    }
+
+    // Show error state if loading failed
+    if (this.state.loadingError) {
+      return (
+        <div className="docs-error" style={{ padding: "40px", textAlign: "center" }}>
+          <h2>⚠️ Failed to load documentation</h2>
+          <p>{this.state.loadingError}</p>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => this.setState({ isLoading: true, loadingError: null })}
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="docs-container">
         {/* Mobile Menu Overlay */}

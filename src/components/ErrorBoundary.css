@@ -1,0 +1,116 @@
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.error-boundary-content {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.error-title {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.error-details {
+  text-align: left;
+  margin: 20px 0;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.error-details summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #495057;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #e9ecef;
+  border-radius: 4px;
+}
+
+.error-stack {
+  margin-top: 15px;
+}
+
+.error-stack pre {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 15px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.error-stack strong {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: #495057;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.error-actions .btn {
+  min-width: 120px;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.error-actions .btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.error-actions .btn-primary:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.error-actions .btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.error-actions .btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
