@@ -5,6 +5,7 @@ class Documentation extends Component {
   state = {
     activeSection: null,
     searchTerm: "",
+    isMobileMenuOpen: false,
   };
 
   sections = [
@@ -26,15 +27,43 @@ class Documentation extends Component {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
-      this.setState({ activeSection: id });
+      this.setState({ activeSection: id, isMobileMenuOpen: false });
     }
+  };
+
+  toggleMobileMenu = () => {
+    this.setState((prevState) => ({
+      isMobileMenuOpen: !prevState.isMobileMenuOpen,
+    }));
+  };
+
+  closeMobileMenu = () => {
+    this.setState({ isMobileMenuOpen: false });
   };
 
   render() {
     return (
       <div className="docs-container">
+        {/* Mobile Menu Overlay */}
+        {this.state.isMobileMenuOpen && (
+          <div className="mobile-menu-overlay" onClick={this.closeMobileMenu}></div>
+        )}
+
+        {/* Mobile Menu Toggle Button */}
+        <button
+          className="mobile-menu-toggle"
+          onClick={this.toggleMobileMenu}
+          aria-label="Toggle menu"
+        >
+          <span className={`hamburger ${this.state.isMobileMenuOpen ? "active" : ""}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
         {/* Sidebar Navigation */}
-        <nav className="docs-sidebar">
+        <nav className={`docs-sidebar ${this.state.isMobileMenuOpen ? "mobile-open" : ""}`}>
           <div className="docs-sidebar-header">
             <h2>📚 CI/CD Guide</h2>
             <p>Kubernetes & DevOps</p>
@@ -45,6 +74,7 @@ class Documentation extends Component {
                 key={section.id}
                 className={this.state.activeSection === section.id ? "active" : ""}
                 onClick={() => this.scrollToSection(section.id)}
+                onTouchStart={() => {}} // Improve touch responsiveness
               >
                 <span className="nav-icon">{section.icon}</span>
                 {section.title}
@@ -187,7 +217,8 @@ class Documentation extends Component {
             </div>
 
             <h3>Key Concepts</h3>
-            <table className="docs-table">
+            <div className="table-wrapper">
+              <table className="docs-table">
               <thead>
                 <tr>
                   <th>Object</th>
@@ -406,7 +437,8 @@ spec:
             </div>
 
             <h3>CDN Cache Modes</h3>
-            <table className="docs-table">
+            <div className="table-wrapper">
+              <table className="docs-table">
               <thead>
                 <tr><th>Mode</th><th>Description</th></tr>
               </thead>
@@ -425,6 +457,7 @@ spec:
                 </tr>
               </tbody>
             </table>
+            </div>
           </section>
 
           {/* Kustomize */}
