@@ -45,16 +45,10 @@ class Documentation extends Component {
     return (
       <div className="docs-container">
         {/* Mobile Menu Overlay */}
-        {this.state.isMobileMenuOpen && (
-          <div className="mobile-menu-overlay" onClick={this.closeMobileMenu}></div>
-        )}
+        {this.state.isMobileMenuOpen && <div className="mobile-menu-overlay" onClick={this.closeMobileMenu}></div>}
 
         {/* Mobile Menu Toggle Button */}
-        <button
-          className="mobile-menu-toggle"
-          onClick={this.toggleMobileMenu}
-          aria-label="Toggle menu"
-        >
+        <button className="mobile-menu-toggle" onClick={this.toggleMobileMenu} aria-label="Toggle menu">
           <span className={`hamburger ${this.state.isMobileMenuOpen ? "active" : ""}`}>
             <span></span>
             <span></span>
@@ -88,20 +82,26 @@ class Documentation extends Component {
           {/* Header */}
           <header className="docs-header">
             <h1>🚀 Complete Guide to CI/CD and Kubernetes Deployment</h1>
-            <p className="docs-subtitle">
-              Everything you need to know about deploying applications to Kubernetes with GitHub Actions
-            </p>
+            <p className="docs-subtitle">Everything you need to know about deploying applications to Kubernetes with GitHub Actions</p>
           </header>
 
           {/* Project Overview */}
           <section id="overview" className="docs-section">
             <h2>🚀 Project Overview</h2>
-            <p>This is a React Counter App that gets:</p>
+            <p>This is a Guide to CI/CD and Kubernetes Deployment that gets:</p>
             <ol className="styled-list">
-              <li><strong>Built</strong> using Node.js</li>
-              <li><strong>Packaged</strong> into a Docker container with Nginx</li>
-              <li><strong>Deployed</strong> to Google Kubernetes Engine (GKE)</li>
-              <li><strong>Exposed</strong> to the internet via Ingress with SSL</li>
+              <li>
+                <strong>Built</strong> using Node.js
+              </li>
+              <li>
+                <strong>Packaged</strong> into a Docker container with Nginx
+              </li>
+              <li>
+                <strong>Deployed</strong> to Google Kubernetes Engine (GKE)
+              </li>
+              <li>
+                <strong>Exposed</strong> to the internet via Ingress with SSL
+              </li>
             </ol>
 
             <h3>Key Technologies</h3>
@@ -176,11 +176,21 @@ class Documentation extends Component {
             <h2>☸️ Kubernetes Fundamentals</h2>
             <p>Kubernetes (K8s) is a container orchestration platform that:</p>
             <ul className="feature-list">
-              <li><strong>Runs</strong> your containers across multiple servers</li>
-              <li><strong>Scales</strong> your app up/down automatically</li>
-              <li><strong>Heals</strong> by restarting failed containers</li>
-              <li><strong>Load balances</strong> traffic across containers</li>
-              <li><strong>Manages</strong> deployments with zero downtime</li>
+              <li>
+                <strong>Runs</strong> your containers across multiple servers
+              </li>
+              <li>
+                <strong>Scales</strong> your app up/down automatically
+              </li>
+              <li>
+                <strong>Heals</strong> by restarting failed containers
+              </li>
+              <li>
+                <strong>Load balances</strong> traffic across containers
+              </li>
+              <li>
+                <strong>Manages</strong> deployments with zero downtime
+              </li>
             </ul>
 
             <h3>Core Kubernetes Objects</h3>
@@ -219,48 +229,60 @@ class Documentation extends Component {
             <h3>Key Concepts</h3>
             <div className="table-wrapper">
               <table className="docs-table">
-              <thead>
-                <tr>
-                  <th>Object</th>
-                  <th>What It Does</th>
-                  <th>Analogy</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>Pod</code></td>
-                  <td>Smallest unit; runs containers</td>
-                  <td>A single worker</td>
-                </tr>
-                <tr>
-                  <td><code>Deployment</code></td>
-                  <td>Manages pods; handles scaling</td>
-                  <td>A team manager</td>
-                </tr>
-                <tr>
-                  <td><code>Service</code></td>
-                  <td>Stable network endpoint</td>
-                  <td>Reception desk</td>
-                </tr>
-                <tr>
-                  <td><code>Ingress</code></td>
-                  <td>Routes external HTTP traffic</td>
-                  <td>Front door</td>
-                </tr>
-                <tr>
-                  <td><code>Namespace</code></td>
-                  <td>Logical isolation</td>
-                  <td>Different floors</td>
-                </tr>
-              </tbody>
-            </table>
+                <thead>
+                  <tr>
+                    <th>Object</th>
+                    <th>What It Does</th>
+                    <th>Analogy</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <code>Pod</code>
+                    </td>
+                    <td>Smallest unit; runs containers</td>
+                    <td>A single worker</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code>Deployment</code>
+                    </td>
+                    <td>Manages pods; handles scaling</td>
+                    <td>A team manager</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code>Service</code>
+                    </td>
+                    <td>Stable network endpoint</td>
+                    <td>Reception desk</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code>Ingress</code>
+                    </td>
+                    <td>Routes external HTTP traffic</td>
+                    <td>Front door</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code>Namespace</code>
+                    </td>
+                    <td>Logical isolation</td>
+                    <td>Different floors</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 
           {/* Deployment YAML */}
           <section id="deployment" className="docs-section">
             <h2>📦 Deployment YAML Explained</h2>
-            <p>The Deployment tells Kubernetes <strong>HOW</strong> to run your application.</p>
+            <p>
+              The Deployment tells Kubernetes <strong>HOW</strong> to run your application.
+            </p>
 
             <div className="code-block">
               <div className="code-header">kustomize/prod/deployment.yaml</div>
@@ -288,15 +310,19 @@ spec:
             <div className="info-box warning">
               <h4>⚠️ Important: Selector is Immutable</h4>
               <p>
-                The <code>spec.selector.matchLabels</code> field <strong>cannot be changed</strong> after a deployment is created.
-                If you need to change it, you must delete and recreate the deployment.
+                The <code>spec.selector.matchLabels</code> field <strong>cannot be changed</strong> after a deployment is created. If you need to
+                change it, you must delete and recreate the deployment.
               </p>
             </div>
 
             <h3>Image Tag Placeholder</h3>
-            <p>We use <code>{"#{IMAGE_TAG}#"}</code> instead of <code>latest</code> because:</p>
+            <p>
+              We use <code>{"#{IMAGE_TAG}#"}</code> instead of <code>latest</code> because:
+            </p>
             <ul className="feature-list">
-              <li><code>latest</code> is ambiguous - which version is "latest"?</li>
+              <li>
+                <code>latest</code> is ambiguous - which version is "latest"?
+              </li>
               <li>Kubernetes may not detect changes if the tag doesn't change</li>
               <li>We want traceability - know exactly which commit is deployed</li>
             </ul>
@@ -305,7 +331,9 @@ spec:
           {/* Service YAML */}
           <section id="service" className="docs-section">
             <h2>🔌 Service YAML Explained</h2>
-            <p>The Service provides a <strong>stable endpoint</strong> to access pods.</p>
+            <p>
+              The Service provides a <strong>stable endpoint</strong> to access pods.
+            </p>
 
             <div className="code-block">
               <div className="code-header">kustomize/base/service.yaml</div>
@@ -340,7 +368,9 @@ spec:
           {/* Ingress YAML */}
           <section id="ingress" className="docs-section">
             <h2>🚪 Ingress YAML Explained</h2>
-            <p>The Ingress routes <strong>external HTTP/HTTPS traffic</strong> to services.</p>
+            <p>
+              The Ingress routes <strong>external HTTP/HTTPS traffic</strong> to services.
+            </p>
 
             <div className="code-block">
               <div className="code-header">kustomize/prod/ingress.yaml</div>
@@ -414,7 +444,9 @@ spec:
                 <li>Google automatically requests a certificate from Let's Encrypt</li>
                 <li>Google validates domain ownership</li>
                 <li>Certificate is auto-renewed before expiration</li>
-                <li>Takes <strong>10-30 minutes</strong> to provision</li>
+                <li>
+                  Takes <strong>10-30 minutes</strong> to provision
+                </li>
               </ol>
             </div>
           </section>
@@ -440,24 +472,33 @@ spec:
             <h3>CDN Cache Modes</h3>
             <div className="table-wrapper">
               <table className="docs-table">
-              <thead>
-                <tr><th>Mode</th><th>Description</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>USE_ORIGIN_HEADERS</code></td>
-                  <td>Respect Cache-Control headers from your server</td>
-                </tr>
-                <tr>
-                  <td><code>FORCE_CACHE_ALL</code></td>
-                  <td>Cache everything (even without headers)</td>
-                </tr>
-                <tr>
-                  <td><code>CACHE_ALL_STATIC</code></td>
-                  <td>Cache common static files (js, css, images)</td>
-                </tr>
-              </tbody>
-            </table>
+                <thead>
+                  <tr>
+                    <th>Mode</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <code>USE_ORIGIN_HEADERS</code>
+                    </td>
+                    <td>Respect Cache-Control headers from your server</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code>FORCE_CACHE_ALL</code>
+                    </td>
+                    <td>Cache everything (even without headers)</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code>CACHE_ALL_STATIC</code>
+                    </td>
+                    <td>Cache common static files (js, css, images)</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 
@@ -514,7 +555,9 @@ resources:
             <h2>🔄 CI/CD Workflows</h2>
 
             <h3>Workflow 1: Build (CI)</h3>
-            <p>Triggered on every push to <code>main</code> branch.</p>
+            <p>
+              Triggered on every push to <code>main</code> branch.
+            </p>
             <div className="flow-diagram">
               <div className="flow-step">
                 <span className="step-num">1</span>
@@ -682,11 +725,19 @@ kubectl describe pod <pod-name> -n production
 # Check logs
 kubectl logs <pod-name> -n production`}</pre>
               </div>
-              <p><strong>Common issues:</strong></p>
+              <p>
+                <strong>Common issues:</strong>
+              </p>
               <ul>
-                <li><code>ImagePullBackOff</code>: Can't pull Docker image (check path/permissions)</li>
-                <li><code>CrashLoopBackOff</code>: Container crashes on start (check logs)</li>
-                <li><code>Pending</code>: No resources available (check node capacity)</li>
+                <li>
+                  <code>ImagePullBackOff</code>: Can't pull Docker image (check path/permissions)
+                </li>
+                <li>
+                  <code>CrashLoopBackOff</code>: Container crashes on start (check logs)
+                </li>
+                <li>
+                  <code>Pending</code>: No resources available (check node capacity)
+                </li>
               </ul>
             </div>
 
@@ -709,7 +760,9 @@ spec.selector: Invalid value: field is immutable`}</pre>
               <div className="code-block">
                 <pre>{`kubectl get managedcertificate -n production`}</pre>
               </div>
-              <p>If status is not <code>Active</code>:</p>
+              <p>
+                If status is not <code>Active</code>:
+              </p>
               <ul>
                 <li>Verify DNS points to Ingress IP</li>
                 <li>Wait 10-30 minutes for provisioning</li>
@@ -720,8 +773,12 @@ spec.selector: Invalid value: field is immutable`}</pre>
             <div className="troubleshoot-card">
               <h3>❌ 502 Bad Gateway</h3>
               <ul>
-                <li>Check if pods are running: <code>kubectl get pods -n production</code></li>
-                <li>Check service endpoints: <code>kubectl get endpoints gcp-cicd -n production</code></li>
+                <li>
+                  Check if pods are running: <code>kubectl get pods -n production</code>
+                </li>
+                <li>
+                  Check service endpoints: <code>kubectl get endpoints gcp-cicd -n production</code>
+                </li>
                 <li>Check backend health in Google Cloud Console</li>
               </ul>
             </div>
@@ -731,10 +788,18 @@ spec.selector: Invalid value: field is immutable`}</pre>
           <footer className="docs-footer">
             <p>📚 Additional Resources</p>
             <div className="resources-grid">
-              <a href="https://kubernetes.io/docs/" target="_blank" rel="noopener noreferrer">Kubernetes Docs</a>
-              <a href="https://kustomize.io/" target="_blank" rel="noopener noreferrer">Kustomize</a>
-              <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener noreferrer">GitHub Actions</a>
-              <a href="https://cloud.google.com/kubernetes-engine/docs" target="_blank" rel="noopener noreferrer">GKE Docs</a>
+              <a href="https://kubernetes.io/docs/" target="_blank" rel="noopener noreferrer">
+                Kubernetes Docs
+              </a>
+              <a href="https://kustomize.io/" target="_blank" rel="noopener noreferrer">
+                Kustomize
+              </a>
+              <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener noreferrer">
+                GitHub Actions
+              </a>
+              <a href="https://cloud.google.com/kubernetes-engine/docs" target="_blank" rel="noopener noreferrer">
+                GKE Docs
+              </a>
             </div>
             <p className="footer-tagline">Happy Deploying! 🚀</p>
           </footer>
@@ -745,4 +810,3 @@ spec.selector: Invalid value: field is immutable`}</pre>
 }
 
 export default Documentation;
-
